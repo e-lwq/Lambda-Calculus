@@ -78,19 +78,10 @@ findType context (PVar x) | isNothing fx = Nothing
 instance Show a => Show (Judgement a) where
     show (J c t p) = unlines (map disp c) ++ "=> " ++ show t ++ " : " ++ show p ++ "\n"
 
-termM = PAbs "y" (To (V 1) (V 2)) (PAbs "z" (V 1) (PApp (PVar "y") (PVar "z")))
-termYZ = PApp (PVar "z") (PVar "y")
-fy = findType [("y",V 1), ("z", To (V 1) (V 2))] termYZ
-fz = findType [("y", V 1) ,("z", To (V 1) (V 2))] (PVar "z")
-
 isDerivableJudgement :: Eq a => Judgement a -> Bool
 isDerivableJudgement (J c m t) = isJust fj && ptype (just fj) == t
                             where
                                 fj = findType c m
-
-termN = PApp (PAbs "z" (V 2) (PAbs "u" (V 3) (PVar "z"))) (PApp (PVar "y") (PVar "x"))
-fn = findType [("x", To (V 1) (V 1)), ("y", To (To (V 1) (V 1)) (V 2))] termN
-tn = isDerivableJudgement (J [("x",To (V 1) (V 1)), ("y",To (To (V 1) (V 1)) (V 2))] termN (To (V 3) (V 2)))
 
 -- assume n does not have free variables bounded in m
 subTyped :: Eq a => Pretyped a -> a -> Pretyped a -> Pretyped a
@@ -152,7 +143,6 @@ termFinding t = if isNothing tf then Nothing else fmap convertIntToString tf
         where
             tf = termFindingInt [] t
 
-egterm = termFinding (To (V 1) (To (V 2) (V 1)))
-egterm2 = termFinding (To (To (V 1) (V 2)) (To (V 1) (V 2)))
-
-tcont = [(PVar 1,To (V 1) (V 2)), (PVar 2, V 1)]
+type1 = To (To (V 1) (To (V 1) (V 3))) (To (V 1) (To (V 2) (V 3)))
+type2 = To (To (To (V 1) (V 3)) (V 1)) (To (To (V 1) (V 3)) (To (V 2) (V 3)))
+type3 = To (To (To (V 1) (V 2)) (V 1)) (To (To (V 1) (To (V 1) (V 2))) (V 1))
